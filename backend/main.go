@@ -27,6 +27,12 @@ func main() {
 
 	app := fiber.New()
 
+	app.Static("/", "../frontend/dist")
+
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("../frontend/dist/index.html")
+	})
+
 	corsOrigin := getEnv("CORS_ORIGIN", "http://localhost:3000")
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: corsOrigin,
