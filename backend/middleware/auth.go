@@ -1,13 +1,21 @@
 package middleware
 
 import (
+	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var JwtSecret = []byte("quick-quiz-secret-key-2024")
+var JwtSecret = []byte(getEnv("JWT_SECRET", "quick-quiz-secret-key-2024"))
+
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
 
 func AuthRequired(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"quiz-backend/database"
 	"quiz-backend/middleware"
@@ -9,15 +10,26 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
 func main() {
+	godotenv.Load()
+
 	database.Connect()
 
 	app := fiber.New()
 
+	corsOrigin := getEnv("CORS_ORIGIN", "http://localhost:3000")
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: corsOrigin,
 		AllowMethods: "GET,POST,PUT,DELETE",
 		AllowHeaders: "Content-Type,Authorization",
 	}))
@@ -37,5 +49,6 @@ func main() {
 	adminApi.Put("/questions/:id", routes.UpdateQuestion)
 	adminApi.Delete("/questions/:id", routes.DeleteQuestion)
 
-	log.Fatal(app.Listen(":5000"))
+	port := getEnv("PORT", "5000")
+	log.Fatal(app.Listen(":" + port))
 }
