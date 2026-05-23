@@ -21,8 +21,9 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      let data;
+      try { data = await res.json(); } catch { data = {}; }
+      if (!res.ok) throw new Error(data.error || "Login failed");
       login(data.token, data.user);
       navigate("/");
     } catch (err) {

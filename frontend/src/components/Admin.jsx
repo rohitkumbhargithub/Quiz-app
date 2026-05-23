@@ -85,9 +85,9 @@ export default function Admin() {
     fetch("/api/admin/questions", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setQuestions)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setFetching(false));
   };
 

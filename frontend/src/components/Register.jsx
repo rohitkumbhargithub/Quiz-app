@@ -22,8 +22,9 @@ export default function Register() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      let data;
+      try { data = await res.json(); } catch { data = {}; }
+      if (!res.ok) throw new Error(data.error || "Registration failed");
       login(data.token, data.user);
       navigate("/");
     } catch (err) {

@@ -1,0 +1,13 @@
+{
+  "name": "quiz",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": { "frontend": "cd frontend && npm run dev", "backend": "cd backend && go run main.go", "dev": "concurrently \"npm run frontend\" \"npm run backend\"" },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

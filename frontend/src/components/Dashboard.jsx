@@ -19,18 +19,18 @@ export default function Dashboard() {
     fetch("/api/results/stats", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setStats)
-      .catch(console.error);
+      .catch(() => {});
   };
 
   const fetchResults = () => {
     fetch("/api/results/mine", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setResults)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 
