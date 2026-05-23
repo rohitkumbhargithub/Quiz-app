@@ -47,6 +47,9 @@ func main() {
 	userApi.Post("/results", routes.SubmitResult)
 	userApi.Get("/results/mine", routes.GetMyResults)
 	userApi.Get("/results/stats", routes.GetDashboardStats)
+	userApi.Get("/progress", routes.GetProgress)
+	userApi.Put("/progress", routes.SaveProgress)
+	userApi.Delete("/progress", routes.DeleteProgress)
 
 	adminApi := app.Group("/api/admin", middleware.AuthRequired, middleware.AdminRequired)
 	adminApi.Get("/questions", routes.GetQuestions)

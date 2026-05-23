@@ -7,37 +7,53 @@ export default function Trivia({
   setTimeOut,
   setCorrectCount,
   setWrongCount,
+  onAnswered,
 }) {
   const [question, setQuestion] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [className, setClassName] = useState("answer");
+  const [answerState, setAnswerState] = useState(null);
 
   useEffect(() => {
     setQuestion(data[questionNumber - 1]);
     setSelectedAnswer(null);
-    setClassName("answer");
+    setAnswerState(null);
   }, [data, questionNumber]);
 
-  const delay = (duration, callback) => {
-    setTimeout(() => { callback(); }, duration);
-  };
+  const delay = (duration) =>
+    new Promise((resolve) => setTimeout(resolve, duration));
 
-  const handleClick = (a) => {
+  const handleClick = async (a) => {
+    if (answerState) return;
+
     setSelectedAnswer(a);
+    setAnswerState("selected");
+
+    await delay(400);
 
     if (a.correct) {
       setCorrectCount((prev) => prev + 1);
-      setClassName("answer correct");
-      delay(1500, () => {
-        setQuestionNumber((prev) => prev + 1);
-      });
+      setAnswerState("correct");
     } else {
       setWrongCount((prev) => prev + 1);
-      setClassName("answer wrong");
-      delay(1500, () => {
-        setTimeOut(true);
-      });
+      setAnswerState("wrong");
     }
+    onAnswered?.();
+  };
+
+  const handleNext = () => {
+    if (answerState === "wrong") {
+      setTimeOut(true);
+    } else {
+      setQuestionNumber((prev) => prev + 1);
+    }
+  };
+
+  const getClassName = (a) => {
+    if (answerState === "selected" && selectedAnswer === a) return "answer selected";
+    if (answerState === "correct" && selectedAnswer === a) return "answer correct";
+    if (answerState === "wrong" && selectedAnswer === a) return "answer wrong";
+    if (answerState) return "answer disabled";
+    return "answer";
   };
 
   return (
@@ -47,13 +63,22 @@ export default function Trivia({
         {question?.answers.map((a) => (
           <div
             key={a.text}
-            className={selectedAnswer === a ? className : "answer"}
-            onClick={() => !selectedAnswer && handleClick(a)}
+            className={getClassName(a)}
+            onClick={() => !answerState && handleClick(a)}
           >
             {a.text}
           </div>
         ))}
       </div>
+      {answerState && answerState !== "selected" && (
+        <div className="triviaFooter">
+          <button className="nextBtn" onClick={handleNext}>
+            {answerState === "wrong" || questionNumber >= data.length
+              ? "Finish Quiz"
+              : "Next Question"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

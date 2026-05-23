@@ -15,6 +15,7 @@ var Client *mongo.Client
 var QuestionCollection *mongo.Collection
 var UserCollection *mongo.Collection
 var ResultCollection *mongo.Collection
+var ProgressCollection *mongo.Collection
 
 func getEnv(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
@@ -45,4 +46,5 @@ func Connect() {
 	QuestionCollection = client.Database(dbName).Collection("questions")
 	UserCollection = client.Database(dbName).Collection("users")
 	ResultCollection = client.Database(dbName).Collection("results")
+	ProgressCollection = client.Database(dbName).Collection("progress")
 }
