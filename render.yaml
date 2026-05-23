@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: quiz-backend
+    env: go
+    buildCommand: cd backend && go build -o server .
+    startCommand: ./backend/server
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: DB_NAME
+        value: quickquiz
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: "5000"
+
+jobs:
+  - type: cmd
+    name: quiz-seed
+    env: go
+    buildCommand: cd backend && go build -o seed ./cmd/seed
+    startCommand: ./backend/seed
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: DB_NAME
+        value: quickquiz
